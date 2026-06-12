@@ -1,73 +1,63 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>금액대별 재건축아파트리스트</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #111;
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
     }
 
     /* ── 로그인 화면 ── */
+    /* 로그인 화면 */
     #login-screen {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 16px;
       width: 320px;
     }
 
     #login-screen h1 { font-size: 1.6rem; letter-spacing: 2px; }
+    #login-screen h1 { font-size: 1.4rem; text-align: center; line-height: 1.4; }
     #login-screen p  { color: #aaa; font-size: 0.9rem; }
 
     #login-screen input {
       width: 100%;
       padding: 12px 16px;
+      padding: 12px 44px 12px 16px;
       border-radius: 8px;
       border: 1px solid #444;
       background: #222;
-      color: #fff;
-      font-size: 1rem;
-      outline: none;
     }
     #login-screen input:focus { border-color: #888; }
 
     #login-screen button {
+    #login-screen button.enter-btn {
       width: 100%;
       padding: 12px;
       border-radius: 8px;
-      border: none;
-      background: #e4405f;
-      color: #fff;
-      font-size: 1rem;
       cursor: pointer;
       transition: background 0.2s;
     }
     #login-screen button:hover { background: #c0392b; }
+    #login-screen button.enter-btn:hover { background: #c0392b; }
 
     #error-msg {
       color: #ff6b6b;
-      font-size: 0.85rem;
       display: none;
     }
 
     /* ── 갤러리 화면 ── */
     #gallery-screen { display: none; width: 100%; padding: 24px; }
+    /* 콘텐츠 화면 */
+    #content-screen {
+      display: none;
+      width: 100%;
+      padding: 24px;
+      flex-direction: column;
+      align-items: center;
+    }
 
     header {
+    #content-screen header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      width: 100%;
+      max-width: 900px;
       margin-bottom: 24px;
       max-width: 1100px;
       margin-left: auto;
@@ -75,14 +65,11 @@
     }
     header h1 { font-size: 1.4rem; }
 
+    #content-screen header h1 { font-size: 1.3rem; }
+
     #logout-btn {
       padding: 6px 16px;
       border-radius: 6px;
-      border: 1px solid #555;
-      background: transparent;
-      color: #ccc;
-      cursor: pointer;
-      font-size: 0.85rem;
     }
     #logout-btn:hover { background: #333; }
 
@@ -112,11 +99,15 @@
 
     .photo-card {
       position: relative;
+    #content-screen img {
+      max-width: 900px;
+      width: 100%;
       border-radius: 10px;
       overflow: hidden;
       aspect-ratio: 1;
       background: #222;
       cursor: pointer;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.5);
     }
     .photo-card img {
       width: 100%;
@@ -183,19 +174,26 @@
 <!-- 로그인 화면 -->
 <div id="login-screen">
   <h1>🔒 금액대별 재건축아파트리스트</h1>
+  <h1>🔒 금액대별<br>재건축아파트리스트</h1>
   <p>비밀번호를 입력하세요</p>
   <div style="position:relative; width:100%;">
     <input type="password" id="pw-input" placeholder="비밀번호" style="padding-right:44px;" />
     <span onclick="togglePw()" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:1.1rem; user-select:none; z-index:1;">👁</span>
+    <input type="password" id="pw-input" placeholder="비밀번호" />
+    <span onclick="togglePw()" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:1.1rem; user-select:none;">👁</span>
   </div>
   <button onclick="checkPassword()">입장</button>
+  <button class="enter-btn" onclick="checkPassword()">입장</button>
   <span id="error-msg">비밀번호가 틀렸습니다.</span>
 </div>
 
 <!-- 갤러리 화면 -->
 <div id="gallery-screen">
+<!-- 콘텐츠 화면 -->
+<div id="content-screen">
   <header>
     <h1>📷 나의 갤러리</h1>
+    <h1>금액대별 재건축아파트리스트</h1>
     <button id="logout-btn" onclick="logout()">로그아웃</button>
   </header>
 
@@ -208,6 +206,7 @@
   <div id="grid">
     <p id="empty-msg">아직 사진이 없습니다. 사진을 업로드해 보세요!</p>
   </div>
+  <img src="금액별 재건축 리스트.png" alt="금액대별 재건축아파트리스트" />
 </div>
 
 <!-- 라이트박스 -->
@@ -222,42 +221,27 @@
   const CORRECT_HASH = "489f719cadf919094ddb38e7654de153ac33c02febb5de91e5345cbe372cf4a0";
 
   function togglePw() {
-    const input = document.getElementById('pw-input');
-    input.type = input.type === 'password' ? 'text' : 'password';
-  }
-
-  async function sha256(message) {
-    const msgBuffer = new TextEncoder().encode(message);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  }
-
-  async function checkPassword() {
-    const pw = document.getElementById('pw-input').value;
     const hash = await sha256(pw);
     if (hash === CORRECT_HASH) {
       sessionStorage.setItem('auth', '1');
       showGallery();
+      showContent();
     } else {
       document.getElementById('error-msg').style.display = 'block';
       document.getElementById('pw-input').value = '';
-    }
-  }
-
-  document.getElementById('pw-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') checkPassword();
   });
 
   // ─── 화면 전환 ─────────────────────────────────────────────────────
   function showGallery() {
+  function showContent() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('gallery-screen').style.display = 'block';
     renderGrid();
+    document.getElementById('content-screen').style.display = 'flex';
   }
 
   function logout() {
-    sessionStorage.removeItem('auth');
     location.reload();
   }
 
@@ -337,6 +321,7 @@
   document.getElementById('lightbox').addEventListener('click', e => {
     if (e.target === document.getElementById('lightbox')) closeLightbox();
   });
+  if (sessionStorage.getItem('auth') === '1') showContent();
 </script>
 </body>
 </html>
