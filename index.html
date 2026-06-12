@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>비밀 사진 갤러리</title>
+  <title>금액대별 재건축아파트리스트</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -182,9 +182,12 @@
 
 <!-- 로그인 화면 -->
 <div id="login-screen">
-  <h1>🔒 비밀 갤러리</h1>
+  <h1>🔒 금액대별 재건축아파트리스트</h1>
   <p>비밀번호를 입력하세요</p>
-  <input type="password" id="pw-input" placeholder="비밀번호" />
+  <div style="position:relative; width:100%;">
+    <input type="password" id="pw-input" placeholder="비밀번호" style="width:100%; padding-right:44px;" />
+    <button onclick="togglePw()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:1.2rem; color:#aaa;">👁</button>
+  </div>
   <button onclick="checkPassword()">입장</button>
   <span id="error-msg">비밀번호가 틀렸습니다.</span>
 </div>
@@ -216,7 +219,12 @@
 <script>
   // ─── 비밀번호 (SHA-256 해시) ───────────────────────────────────────
   // "happy"의 SHA-256: 2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824
-  const CORRECT_HASH = "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824";
+  const CORRECT_HASH = "489f719cadf919094ddb38e7654de153ac33c02febb5de91e5345cbe372cf4a0";
+
+  function togglePw() {
+    const input = document.getElementById('pw-input');
+    input.type = input.type === 'password' ? 'text' : 'password';
+  }
 
   async function sha256(message) {
     const msgBuffer = new TextEncoder().encode(message);
